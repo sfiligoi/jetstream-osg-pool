@@ -1,0 +1,19 @@
+# Pseudo image creating script
+# using a syntax similar to Dockerfile
+
+FROM JS-API-Featured-CentOS7-May-20-2019
+
+RUN yum install https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm
+RUN yum install epel-release yum-plugin-priorities
+RUN yum install frontier-squid
+RUN yum update
+
+# vi /etc/squid/customize.sh
+
+# We are assuming a specific IP and DNS name, update as needed
+RUN echo "osg-ce-squid.osg.jetstream-cloud.org" > /etc/hostname
+RUN echo "10.1.1.14   osg-ce-squid osg-ce-squid.osg.jetstream-cloud.org" >> /etc/hosts
+
+RUN systemctl enable frontier-squid
+RUN systemctl start frontier-squid
+
