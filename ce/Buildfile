@@ -1,0 +1,56 @@
+# Pseudo image creating script
+# using a syntax similar to Dockerfile
+
+FROM JS-API-Featured-CentOS7-May-20-2019
+
+yum install ntp
+
+RUN yum install https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm
+RUN yum install epel-release yum-plugin-priorities
+RUN yum install osg-ca-certs cilogon-openid-ca-cert
+RUN yum install fetch-crl
+RUN yum install osg-ce-condor redhat-lsb-core
+RUN yum update
+
+systemctl start fetch-crl-cron
+systemctl enable fetch-crl-cron
+
+# get hostcert
+# one way is to get it from let's encrypt:
+# ADD get_hostcert.sh /usr/sbin/get_hostcert.sh
+# RUN /usr/sbin/get_hostcert.sh
+
+ADD add_ce_user.sh /usr/bin/add_ce_users.sh
+RUN /usr/bin/add_ce_users.sh
+
+ADD condor.d/98_security.config /etc/condor/config.d/98_security.config 
+ADD condor.d/90_daemons.config /etc/condor/config.d/90_daemons.config 
+ADD condor.d/50_condor_host.config /etc/condor/config.d/50_condor_host.config 
+
+ADD osg.d/01-squid.ini /etc/osg/config.d/01-squid.ini
+ADD osg.d/30-gip.ini /etc/osg/config.d/30-gip.ini
+ADD osg.d/40-siteinfo.ini /etc/osg/config.d/40-siteinfo.ini
+
+# Use the same password as for the collector
+ADD pool_password /etc/condor/pool_password
+
+ADD grid-mapfile /etc/grid-security/grid-mapfile
+
+# We are assuming a specific IP and DNS name, update as needed
+RUN echo "js-129-114-19-48.jetstream-cloud.org" > /etc/hostname
+
+RUN echo "10.1.1.13   osg-ce-collector osg-ce-collector.osg.jetstream-cloud.org" >> /etc/hosts
+RUN echo "10.1.1.14   osg-ce-squid osg-ce-squid.osg.jetstream-cloud.org" >> /etc/hosts
+
+/usr/sbin/osg-configure -c
+
+RUN systemctl enable condor
+RUN systemctl start condor
+
+RUN systemctl enable condor-ce
+RUN systemctl start condor-ce
+
+RUN systemctl enable gratia-probes-cron
+RUN systemctl start gratia-probes-cron
+
+
