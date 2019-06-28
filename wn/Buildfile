@@ -6,7 +6,12 @@ FROM JS-API-Featured-CentOS7-May-20-2019
 RUN yum install https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm
 RUN yum install epel-release yum-plugin-priorities
 RUN yum install osg-oasis osg-wn-client condor
+RUN yum install singularity
 RUN yum update
+
+# configure singularity
+# see https://opensciencegrid.org/docs/worker-node/install-singularity/#singularity-via-rpm
+RUN sed -i 's/enable overlay = try/enable overlay = no/' /etc/singularity/singularity.conf
 
 ADD add_ce_user.sh /usr/bin/add_ce_users.sh
 RUN /usr/bin/add_ce_users.sh
