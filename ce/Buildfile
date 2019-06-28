@@ -23,6 +23,9 @@ systemctl enable fetch-crl-cron
 ADD add_ce_user.sh /usr/bin/add_ce_users.sh
 RUN /usr/bin/add_ce_users.sh
 
+# This one is only needed if we are behind a port-forwarding NAT
+ADD condor-ce.d/01_nat.config /etc/condor-ce/config.d/01_nat.config
+
 ADD condor.d/98_security.config /etc/condor/config.d/98_security.config 
 ADD condor.d/90_daemons.config /etc/condor/config.d/90_daemons.config 
 ADD condor.d/50_condor_host.config /etc/condor/config.d/50_condor_host.config 
