@@ -30,8 +30,14 @@ RUN echo "10.1.1.14   osg-ce-squid osg-ce-squid.osg.jetstream-cloud.org" >> /etc
 RUN echo "/cvmfs /etc/auto.cvmfs" > /etc/auto.master.d/cvmfs.autofs
 ADD cvmfs.d/default.local /etc/cvmfs/default.local
 
+# Dynamically update my name, by adding the JetStream part
+ADD update_domain.sh /usr/sbin/update_domain.sh
+ADD update_domain.service /usr/lib/systemd/system/update_domain.service
+
 RUN systemctl enable autofs
 RUN systemctl start autofs
+
+RUN systemctl enable update_domain
 
 RUN systemctl enable condor
 RUN systemctl start condor
