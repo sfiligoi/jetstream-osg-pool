@@ -44,6 +44,7 @@ RUN echo "js-129-114-19-48.jetstream-cloud.org" > /etc/hostname
 
 RUN echo "10.1.1.13   osg-ce-collector osg-ce-collector.osg.jetstream-cloud.org" >> /etc/hosts
 RUN echo "10.1.1.14   osg-ce-squid osg-ce-squid.osg.jetstream-cloud.org" >> /etc/hosts
+RUN echo "10.1.1.4    js-129-114-19-48.jetstream-cloud.org js-129-114-19-48" >> /etc/hosts
 
 /usr/sbin/osg-configure -c
 
