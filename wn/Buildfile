@@ -20,6 +20,8 @@ ADD 98_security.config /etc/condor/config.d/98_security.config
 ADD 99_daemons.config /etc/condor/config.d/99_daemons.config
 ADD 50_condor_host.config /etc/condor/config.d/50_condor_host.config
 
+ADD 80_osg_users.config /etc/condor/config.d/80_osg_users.config
+
 # get the same one as at the collector
 ADD pool_password /etc/condor/pool_password
 
